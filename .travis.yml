@@ -1,0 +1,17 @@
+language: generic
+
+sudo: required
+
+dist: trusty
+
+services:
+  - docker
+
+before_install:
+  - sudo pip install --user codecov
+
+script:
+  - docker run -v $TRAVIS_BUILD_DIR:/JavaASD lamtev/java /bin/bash -c " cd JavaASD && gradle build "
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
