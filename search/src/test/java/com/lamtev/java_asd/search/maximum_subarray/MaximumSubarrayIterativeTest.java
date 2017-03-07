@@ -26,7 +26,7 @@ public class MaximumSubarrayIterativeTest {
             for (int length : LENGTHS) {
                 int[] array = generateArray(length);
 
-                int[] expectedSubarray = MaximumSubarrayBFS.maximumSubarray(array);
+                int[] expectedSubarray = MaximumSubarrayBruteforce.maximumSubarray(array);
                 int[] actualSubarray = MaximumSubarrayIterative.maximumSubarray(array);
 
                 int expectedSum = Arrays.stream(expectedSubarray)

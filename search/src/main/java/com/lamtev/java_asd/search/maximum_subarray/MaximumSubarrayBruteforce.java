@@ -2,7 +2,7 @@ package com.lamtev.java_asd.search.maximum_subarray;
 
 import java.util.Arrays;
 
-public class MaximumSubarrayBFS {
+public class MaximumSubarrayBruteforce {
 
     /**
      * Поиск максимального подмассива за время O(n^2).
