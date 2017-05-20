@@ -73,4 +73,32 @@ public class AVLTreeSetTest {
         }
     }
 
+    @Test
+    public void testFirst() {
+        for (int i = 0; i < 10; ++i) {
+            TreeSet<Integer> expected = new TreeSet<>();
+            AVLTreeSet<Integer> actual = new AVLTreeSet<>();
+            for (int j = 0; j < 1_000_000; ++j) {
+                Integer element = RANDOM.nextInt(250_000);
+                expected.add(element);
+                actual.add(element);
+                assertEquals(expected.first(), actual.first());
+            }
+        }
+    }
+
+    @Test
+    public void testLast() {
+        for (int i = 0; i < 10; ++i) {
+            TreeSet<Integer> expected = new TreeSet<>();
+            AVLTreeSet<Integer> actual = new AVLTreeSet<>();
+            for (int j = 0; j < 1_000_000; ++j) {
+                Integer element = RANDOM.nextInt(250_000);
+                expected.add(element);
+                actual.add(element);
+                assertEquals(expected.last(), actual.last());
+            }
+        }
+    }
+
 }

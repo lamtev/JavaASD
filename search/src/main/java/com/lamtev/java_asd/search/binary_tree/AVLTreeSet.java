@@ -7,8 +7,9 @@ public class AVLTreeSet<E> implements SortedSet<E> {
 
     private final Comparator<? super E> comparator;
     private Node root;
+    private int size;
     private boolean alreadyInserted;
-    private int size = 0;
+    private boolean successfullyDeleted;
 
     public AVLTreeSet(Comparator<? super E> comparator) {
         this.comparator = comparator;
@@ -40,12 +41,14 @@ public class AVLTreeSet<E> implements SortedSet<E> {
 
     @Override
     public E first() {
-        throw new UnsupportedOperationException();
+        makeSureThatSetIsNotEmpty();
+        return first(root).key;
     }
 
     @Override
     public E last() {
-        throw new UnsupportedOperationException();
+        makeSureThatSetIsNotEmpty();
+        return last(root).key;
     }
 
     @Override
@@ -62,7 +65,7 @@ public class AVLTreeSet<E> implements SortedSet<E> {
     public boolean contains(Object o) {
         @SuppressWarnings("unchecked")
         E key = (E) o;
-        validateValueIsNull(key);
+        makeSureThatKeyIsNotNull(key);
         if (root != null) {
             Node current = root;
             while (current != null) {
@@ -96,7 +99,7 @@ public class AVLTreeSet<E> implements SortedSet<E> {
 
     @Override
     public boolean add(E e) {
-        validateValueIsNull(e);
+        makeSureThatKeyIsNotNull(e);
         alreadyInserted = true;
         root = insert(root, e);
         if (!alreadyInserted) {
@@ -107,7 +110,15 @@ public class AVLTreeSet<E> implements SortedSet<E> {
 
     @Override
     public boolean remove(Object o) {
-        throw new UnsupportedOperationException();
+        @SuppressWarnings("unchecked")
+        E key = (E) o;
+        makeSureThatKeyIsNotNull(key);
+        successfullyDeleted = false;
+        root = remove(root, key);
+        if (successfullyDeleted) {
+            --size;
+        }
+        return successfullyDeleted;
     }
 
     @Override
@@ -135,20 +146,20 @@ public class AVLTreeSet<E> implements SortedSet<E> {
         throw new UnsupportedOperationException();
     }
 
-    private Node insert(Node current, E key) {
-        if (current == null) {
+    private Node insert(Node toNode, E key) {
+        if (toNode == null) {
             alreadyInserted = false;
             return new Node(key);
         }
-        int cmp = compare(key, current.key);
+        int cmp = compare(key, toNode.key);
         if (cmp == 0) {
             alreadyInserted = true;
         } else if (cmp < 0) {
-            current.left = insert(current.left, key);
+            toNode.left = insert(toNode.left, key);
         } else {
-            current.right = insert(current.right, key);
+            toNode.right = insert(toNode.right, key);
         }
-        return balanced(current);
+        return balanced(toNode);
     }
 
     private int compare(E c1, E c2) {
@@ -157,42 +168,96 @@ public class AVLTreeSet<E> implements SortedSet<E> {
         return comparator == null ? co1.compareTo(c2) : comparator.compare(c1, c2);
     }
 
-    private Node balanced(Node current) {
-        current.fixupHeight();
-        if (current.balanceFactor() == 2) {
-            if (current.right.balanceFactor() < 0) {
-                current.right = rotateRight(current.right);
+    private Node balanced(Node node) {
+        node.fixupHeight();
+        if (node.balanceFactor() == 2) {
+            if (node.right.balanceFactor() < 0) {
+                node.right = rotateRight(node.right);
             }
-            return rotateLeft(current);
+            return rotateLeft(node);
         }
-        if (current.balanceFactor() == -2) {
-            if (current.left.balanceFactor() > 0) {
-                current.left = rotateLeft(current.left);
+        if (node.balanceFactor() == -2) {
+            if (node.left.balanceFactor() > 0) {
+                node.left = rotateLeft(node.left);
             }
-            return rotateRight(current);
+            return rotateRight(node);
         }
-        return current;
+        return node;
     }
 
-    private Node rotateLeft(Node current) {
-        Node right = current.right;
-        current.right = right.left;
-        right.left = current;
-        Arrays.asList(current, right).forEach(Node::fixupHeight);
+    private Node rotateLeft(Node node) {
+        Node right = node.right;
+        node.right = right.left;
+        right.left = node;
+        Arrays.asList(node, right).forEach(Node::fixupHeight);
         return right;
     }
 
-    private Node rotateRight(Node current) {
-        Node left = current.left;
-        current.left = left.right;
-        left.right = current;
-        Arrays.asList(current, left).forEach(Node::fixupHeight);
+    private Node rotateRight(Node node) {
+        Node left = node.left;
+        node.left = left.right;
+        left.right = node;
+        Arrays.asList(node, left).forEach(Node::fixupHeight);
         return left;
     }
 
-    private void validateValueIsNull(E value) {
-        if (value == null) {
+    private Node remove(Node fromNode, E value) {
+        if (fromNode == null) {
+            successfullyDeleted = false;
+            return null;
+        }
+        int cmp = compare(value, fromNode.key);
+        if (cmp < 0)
+            fromNode.left = remove(fromNode.left, value);
+        else if (cmp > 0) {
+            fromNode.right = remove(fromNode.right, value);
+        } else {
+            successfullyDeleted = true;
+            Node left = fromNode.left;
+            Node right = fromNode.right;
+            if (right == null) {
+                return left;
+            }
+
+            Node first = first(right);
+            first.right = removeFirst(right);
+            first.left = left;
+            return balanced(first);
+        }
+        return balanced(fromNode);
+    }
+
+    private Node removeFirst(Node fromNode) {
+        if (fromNode.left == null) {
+            return fromNode.right;
+        }
+        fromNode.left = removeFirst(fromNode.left);
+        return balanced(fromNode);
+    }
+
+    private Node first(Node withinNode) {
+        if (withinNode.left == null) {
+            return withinNode;
+        }
+        return first(withinNode.left);
+    }
+
+    private Node last(Node withinNode) {
+        if (withinNode.right == null) {
+            return withinNode;
+        }
+        return last(withinNode.right);
+    }
+
+    private void makeSureThatKeyIsNotNull(E key) {
+        if (key == null) {
             throw new NullPointerException("Method parameter is null");
+        }
+    }
+
+    private void makeSureThatSetIsNotEmpty() {
+        if (isEmpty()) {
+            throw new NoSuchElementException("Set is empty");
         }
     }
 
