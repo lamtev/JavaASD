@@ -5,6 +5,7 @@ import org.junit.Test;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class AVLTreeSetTest {
 
@@ -99,6 +100,18 @@ public class AVLTreeSetTest {
                 assertEquals(expected.last(), actual.last());
             }
         }
+    }
+
+    @Test
+    public void testClear() {
+        AVLTreeSet<Integer> set = new AVLTreeSet<>();
+        for (int j = 0; j < 1_000; ++j) {
+            Integer element = RANDOM.nextInt(250_000);
+            set.add(element);
+        }
+        set.clear();
+        assertEquals(0, set.size());
+        assertTrue(set.isEmpty());
     }
 
 }

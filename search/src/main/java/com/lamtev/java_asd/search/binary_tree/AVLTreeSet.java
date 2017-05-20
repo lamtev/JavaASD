@@ -25,21 +25,6 @@ public class AVLTreeSet<E> implements SortedSet<E> {
     }
 
     @Override
-    public SortedSet<E> subSet(E fromElement, E toElement) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public SortedSet<E> headSet(E toElement) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public SortedSet<E> tailSet(E fromElement) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public E first() {
         makeSureThatSetIsNotEmpty();
         return first(root).key;
@@ -88,16 +73,6 @@ public class AVLTreeSet<E> implements SortedSet<E> {
     }
 
     @Override
-    public Object[] toArray() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public <T> T[] toArray(T[] a) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public boolean add(E e) {
         makeSureThatKeyIsNotNull(e);
         alreadyInserted = true;
@@ -122,28 +97,11 @@ public class AVLTreeSet<E> implements SortedSet<E> {
     }
 
     @Override
-    public boolean containsAll(Collection<?> c) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean addAll(Collection<? extends E> c) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean retainAll(Collection<?> c) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean removeAll(Collection<?> c) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public void clear() {
-        throw new UnsupportedOperationException();
+        root = null;
+        size = 0;
+        alreadyInserted = false;
+        successfullyDeleted = false;
     }
 
     private Node insert(Node toNode, E key) {
@@ -261,7 +219,53 @@ public class AVLTreeSet<E> implements SortedSet<E> {
         }
     }
 
+    @Override
+    public Object[] toArray() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public <T> T[] toArray(T[] a) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public SortedSet<E> subSet(E fromElement, E toElement) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public SortedSet<E> headSet(E toElement) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public SortedSet<E> tailSet(E fromElement) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean containsAll(Collection<?> c) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean addAll(Collection<? extends E> c) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean retainAll(Collection<?> c) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean removeAll(Collection<?> c) {
+        throw new UnsupportedOperationException();
+    }
+
     private class Node {
+
         private E key;
         private int height;
         private Node left;
